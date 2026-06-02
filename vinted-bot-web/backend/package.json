@@ -1,0 +1,19 @@
+{
+  "name": "vinted-bot-web-backend",
+  "version": "0.1.0",
+  "description": "Backend Express pour Vinted Bot Web (étape 1 : store en mémoire)",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --env-file=.env index.js",
+    "dev": "node --watch --env-file=.env index.js",
+    "migrate": "node --env-file=.env db/migrate.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.21.0"
+  }
+}
