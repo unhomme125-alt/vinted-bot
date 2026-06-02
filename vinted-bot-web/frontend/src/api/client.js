@@ -5,7 +5,9 @@ const BASE = '/api';
 
 function authHeaders() {
   const token = localStorage.getItem('token');
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  // ngrok-skip-browser-warning : évite la page d'avertissement ngrok sur les appels API.
+  const base = { 'ngrok-skip-browser-warning': 'true' };
+  return token ? { ...base, Authorization: `Bearer ${token}` } : base;
 }
 
 // Déballe le format uniforme { success, data | error }.
