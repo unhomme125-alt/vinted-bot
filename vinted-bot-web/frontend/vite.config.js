@@ -6,6 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    // Autorise l'accès via un tunnel public (Cloudflare *.trycloudflare.com, etc.)
+    allowedHosts: true,
     proxy: {
       '/api': 'http://localhost:3001',
     },
