@@ -26,6 +26,9 @@ dist/
 !.env.example
 
 
+# ── Images de référence / maquettes (non publiées) ───────
+/FRONT.png
+
 # ── OS / éditeurs ────────────────────────────────────────
 .DS_Store
 Thumbs.db

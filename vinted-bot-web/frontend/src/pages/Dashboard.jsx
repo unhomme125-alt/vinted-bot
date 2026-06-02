@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from '../api/client.js';
 import SearchForm from '../components/SearchForm.jsx';
 import HistoryList from '../components/HistoryList.jsx';
-import GroupPanel from '../components/GroupPanel.jsx';
 import SharedSearches from '../components/SharedSearches.jsx';
 
 const TABS = [
@@ -34,7 +33,7 @@ export default function Dashboard() {
           <button
             key={t.key}
             className={tab === t.key ? 'tab active' : 'tab'}
-            onClick={() => setTab(t.key)}
+            onClick={() => (t.key === 'group' ? navigate('/groups') : setTab(t.key))}
           >
             {t.label}
           </button>
@@ -43,7 +42,6 @@ export default function Dashboard() {
 
       <main className="content">
         {tab === 'search' && <SearchForm />}
-        {tab === 'group' && <GroupPanel />}
         {tab === 'shared' && <SharedSearches />}
         {tab === 'history' && <HistoryList />}
       </main>

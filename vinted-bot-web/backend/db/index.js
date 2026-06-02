@@ -304,6 +304,97 @@ async function getGroupMembersForUser({ userId }) {
   }
 }
 
+// Groupes (acceptés) de l'utilisateur, avec propriétaire, nb de membres, rôle.
+async function getMyGroups({ userId }) {
+  try {
+    const { rows } = await pool.query(
+      `SELECT g.id, g.name, g.created_at, g.created_by,
+              ou.username AS owner_username,
+              (g.created_by = $1) AS is_owner,
+              (SELECT COUNT(*) FROM group_members x
+                WHERE x.group_id = g.id AND x.status = 'accepted')::int AS member_count
+         FROM groups g
+         JOIN group_members m ON m.group_id = g.id AND m.user_id = $1 AND m.status = 'accepted'
+         JOIN users ou ON ou.id = g.created_by
+        ORDER BY g.id`,
+      [userId]
+    );
+    return rows;
+  } catch (err) {
+    console.error('[db] getMyGroups —', err.message);
+    throw err;
+  }
+}
+
+// Membres acceptés d'un groupe précis (propriétaire en tête).
+async function getGroupMembers({ groupId }) {
+  try {
+    const { rows } = await pool.query(
+      `SELECT m.user_id, u.username, m.joined_at,
+              (g.created_by = m.user_id) AS is_owner
+         FROM group_members m
+         JOIN users u ON u.id = m.user_id
+         JOIN groups g ON g.id = m.group_id
+        WHERE m.group_id = $1 AND m.status = 'accepted'
+        ORDER BY (g.created_by = m.user_id) DESC, m.id`,
+      [groupId]
+    );
+    return rows;
+  } catch (err) {
+    console.error('[db] getGroupMembers —', err.message);
+    throw err;
+  }
+}
+
+// Recherche d'utilisateurs à inviter : match sur le pseudo, hors soi-même et hors
+// personnes déjà liées au groupe (membre ou invitation en cours).
+async function searchInvitableUsers({ q, groupId, userId }) {
+  try {
+    const { rows } = await pool.query(
+      `SELECT u.id, u.username
+         FROM users u
+        WHERE u.username ILIKE $1
+          AND u.id <> $2
+          AND NOT EXISTS (
+            SELECT 1 FROM group_members m WHERE m.group_id = $3 AND m.user_id = u.id
+          )
+        ORDER BY u.username
+        LIMIT 8`,
+      [`%${q}%`, userId, groupId]
+    );
+    return rows;
+  } catch (err) {
+    console.error('[db] searchInvitableUsers —', err.message);
+    throw err;
+  }
+}
+
+async function isGroupOwner({ groupId, userId }) {
+  try {
+    const { rows } = await pool.query(
+      'SELECT 1 FROM groups WHERE id = $1 AND created_by = $2 LIMIT 1',
+      [groupId, userId]
+    );
+    return rows.length > 0;
+  } catch (err) {
+    console.error('[db] isGroupOwner —', err.message);
+    throw err;
+  }
+}
+
+async function removeMember({ groupId, userId }) {
+  try {
+    const { rows } = await pool.query(
+      'DELETE FROM group_members WHERE group_id = $1 AND user_id = $2 RETURNING *',
+      [groupId, userId]
+    );
+    return rows[0] || null;
+  } catch (err) {
+    console.error('[db] removeMember —', err.message);
+    throw err;
+  }
+}
+
 // Recherches des AUTRES membres acceptés des groupes où l'utilisateur est accepté.
 async function getSharedSearches({ userId }) {
   try {
@@ -348,6 +439,11 @@ const ops = {
   declineInvitation,
   getMembers,
   getGroupMembersForUser,
+  getMyGroups,
+  getGroupMembers,
+  searchInvitableUsers,
+  isGroupOwner,
+  removeMember,
   getSharedSearches,
 };
 
