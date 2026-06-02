@@ -134,7 +134,7 @@ export default function GroupsManagement() {
     <div className="gm">
       {/* ── Sidebar ── */}
       <aside className="gm-sidebar">
-        <div className="gm-logo" style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>
+        <div className="gm-logo" style={{ cursor: 'pointer' }} onClick={() => navigate('/home')}>
           Vin<span>ted</span>
         </div>
 
@@ -194,7 +194,7 @@ export default function GroupsManagement() {
             <h1>Groups Management</h1>
             <p className="muted">Gère tes groupes, membres et invitations</p>
           </div>
-          <button className="gm-btn" onClick={() => navigate('/dashboard')}>← Dashboard</button>
+          <button className="gm-btn" onClick={() => navigate('/home')}>← Accueil</button>
         </div>
 
         {(notice || error) && (

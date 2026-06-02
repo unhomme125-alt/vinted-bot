@@ -21,7 +21,7 @@ export default function Register() {
     try {
       const data = await post('/auth/register', { username, password });
       localStorage.setItem('token', data.token);
-      navigate('/dashboard');
+      navigate('/home');
     } catch (err) {
       setError(err.message);
     } finally {

@@ -15,14 +15,19 @@ interface TimelineItem {
   relatedIds: number[];
   status: "completed" | "in-progress" | "pending";
   energy: number;
+  route?: string;
 }
 
 interface RadialOrbitalTimelineProps {
   timelineData: TimelineItem[];
+  // Si fourni, un clic sur un nœud appelle onSelect (ex. navigation) au lieu
+  // d'ouvrir la carte de détail — utile pour s'en servir comme menu.
+  onSelect?: (item: TimelineItem) => void;
 }
 
 export default function RadialOrbitalTimeline({
   timelineData,
+  onSelect,
 }: RadialOrbitalTimelineProps) {
   const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>(
     {}
@@ -36,6 +41,7 @@ export default function RadialOrbitalTimeline({
     y: 0,
   });
   const [activeNodeId, setActiveNodeId] = useState<number | null>(null);
+  const [hovered, setHovered] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<Record<number, HTMLDivElement | null>>({});
@@ -85,7 +91,8 @@ export default function RadialOrbitalTimeline({
   useEffect(() => {
     let rotationTimer: NodeJS.Timeout;
 
-    if (autoRotate && viewMode === "orbital") {
+    // La rotation se met en pause quand un nœud est survolé (clic plus facile).
+    if (autoRotate && viewMode === "orbital" && !hovered) {
       rotationTimer = setInterval(() => {
         setRotationAngle((prev) => {
           const newAngle = (prev + 0.3) % 360;
@@ -99,7 +106,7 @@ export default function RadialOrbitalTimeline({
         clearInterval(rotationTimer);
       }
     };
-  }, [autoRotate, viewMode]);
+  }, [autoRotate, viewMode, hovered]);
 
   const centerViewOnNode = (nodeId: number) => {
     if (viewMode !== "orbital" || !nodeRefs.current[nodeId]) return;
@@ -197,8 +204,14 @@ export default function RadialOrbitalTimeline({
                 ref={(el) => (nodeRefs.current[item.id] = el)}
                 className="absolute transition-all duration-700 cursor-pointer"
                 style={nodeStyle}
+                onMouseEnter={() => setHovered(true)}
+                onMouseLeave={() => setHovered(false)}
                 onClick={(e) => {
                   e.stopPropagation();
+                  if (onSelect) {
+                    onSelect(item);
+                    return;
+                  }
                   toggleItem(item.id);
                 }}
               >

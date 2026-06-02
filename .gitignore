@@ -28,6 +28,7 @@ dist/
 
 # ── Images de référence / maquettes (non publiées) ───────
 /FRONT.png
+/menu.png
 
 # ── OS / éditeurs ────────────────────────────────────────
 .DS_Store

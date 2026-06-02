@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { logout } from '../api/client.js';
 import SearchForm from '../components/SearchForm.jsx';
 import HistoryList from '../components/HistoryList.jsx';
@@ -14,7 +14,9 @@ const TABS = [
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState('search');
+  const [params] = useSearchParams();
+  // Onglet initial pilotable depuis l'accueil via ?tab=shared|history|search
+  const [tab, setTab] = useState(params.get('tab') || 'search');
 
   function handleLogout() {
     logout();
@@ -25,7 +27,10 @@ export default function Dashboard() {
     <div className="page">
       <header className="topbar">
         <h1>Vinted Bot</h1>
-        <button className="ghost" onClick={handleLogout}>Déconnexion</button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button className="ghost" onClick={() => navigate('/home')}>← Accueil</button>
+          <button className="ghost" onClick={handleLogout}>Déconnexion</button>
+        </div>
       </header>
 
       <nav className="tabs">
