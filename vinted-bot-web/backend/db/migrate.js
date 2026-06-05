@@ -1,48 +1,71 @@
-// db/migrate.js — Crée le schéma puis seed l'utilisateur de démo.
+// db/migrate.js — Crée le schéma puis seed l'utilisateur admin.
 //
-// Lancer une fois :  node --env-file=.env db/migrate.js
-// Idempotent : schema.sql utilise IF NOT EXISTS, le seed utilise ON CONFLICT.
+// Lancer :  node --env-file=.env db/migrate.js
+// Idempotent : schema.sql utilise IF NOT EXISTS ; l'admin est upserté
+// (le mot de passe est (re)défini depuis ADMIN_PASSWORD à chaque exécution).
 
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import pool from './pool.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS) || 12;
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
 
 async function migrate() {
   const schema = readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
+
+  // Mot de passe admin : jamais codé en dur. Pris dans ADMIN_PASSWORD, sinon
+  // généré fort et affiché UNE fois pour que l'opérateur le note.
+  let adminPassword = process.env.ADMIN_PASSWORD;
+  let generated = false;
+  if (!adminPassword) {
+    adminPassword = crypto.randomBytes(15).toString('base64url'); // ~20 caractères
+    generated = true;
+  }
+
   try {
     // 1. Schéma
     await pool.query(schema);
     console.log('[migrate] Schéma appliqué (tables + index).');
 
-    // 2. Seed : utilisateur "admin" + groupe "Default" (login de démo)
-    const hash = bcrypt.hashSync('admin', 10);
+    // 2. Admin : upsert (insert si absent, sinon (re)définit le mot de passe)
+    const hash = await bcrypt.hash(adminPassword, BCRYPT_ROUNDS);
     const { rows } = await pool.query(
       `INSERT INTO users (username, password_hash) VALUES ($1, $2)
-       ON CONFLICT (username) DO NOTHING
-       RETURNING id`,
-      ['admin', hash]
+       ON CONFLICT (username) DO UPDATE SET password_hash = EXCLUDED.password_hash
+       RETURNING id, (xmax = 0) AS created`,
+      [ADMIN_USERNAME, hash]
     );
+    const adminId = rows[0].id;
+    const created = rows[0].created;
 
-    if (rows.length > 0) {
-      const adminId = rows[0].id;
-      const grp = await pool.query(
-        `INSERT INTO groups (name, created_by) VALUES ($1, $2) RETURNING id`,
-        ['Default', adminId]
+    // 3. Groupe "Default" de l'admin (créé une seule fois)
+    const grp = await pool.query(
+      `SELECT id FROM groups WHERE created_by = $1 AND name = 'Default' LIMIT 1`,
+      [adminId]
+    );
+    if (grp.rows.length === 0) {
+      const ins = await pool.query(
+        `INSERT INTO groups (name, created_by) VALUES ('Default', $1) RETURNING id`,
+        [adminId]
       );
       await pool.query(
         `INSERT INTO group_members (group_id, user_id) VALUES ($1, $2)
          ON CONFLICT (group_id, user_id) DO NOTHING`,
-        [grp.rows[0].id, adminId]
+        [ins.rows[0].id, adminId]
       );
-      console.log('[migrate] Seed : user "admin" / mot de passe "admin" + groupe "Default".');
-    } else {
-      console.log('[migrate] Seed ignoré (admin existe déjà).');
     }
 
+    console.log(`[migrate] Admin "${ADMIN_USERNAME}" ${created ? 'créé' : 'mis à jour'}, mot de passe (re)défini.`);
+    if (generated) {
+      console.log('\n  ! ADMIN_PASSWORD non défini — mot de passe admin généré :');
+      console.log('      ' + adminPassword);
+      console.log('  Note-le maintenant (non réaffiché). Définis ADMIN_PASSWORD dans .env pour le fixer.\n');
+    }
     console.log('[migrate] Terminé avec succès.');
   } catch (err) {
     console.error('[migrate] Échec —', err.message);
