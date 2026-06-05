@@ -1,22 +1,24 @@
-/* groups-management.css — reproduction de la maquette « Groups Management ».
-   CSS vanilla, aucune librairie. Palette et espacements estimés depuis le visuel. */
+/* groups-management.css — écran « Groups Management », thème NOIR premium
+   (harmonisé avec le reste du site : turquoise Vinted sur fond sombre).
+   CSS vanilla, aucune librairie. */
 
 .gm {
-  --teal: #13b8be;
-  --teal-dark: #0e9aa0;
-  --ink: #1b2027;
-  --muted: #8a93a0;
-  --line: #ecedf1;
-  --bg: #f5f6f8;
-  --sidebar: #0e1014;
-  --sidebar-hover: #1a1d23;
-  --red: #f0533f;
+  --teal: #16b5c0;
+  --teal-dark: #0b818b;
+  --ink: #e8ebef;
+  --muted: #8b95a1;
+  --line: rgba(255, 255, 255, 0.08);
+  --bg: #04090b;
+  --card: rgba(255, 255, 255, 0.03);
+  --sidebar: #080d10;
+  --sidebar-hover: #141b1f;
+  --red: #ff6b5a;
   --green: #23b26d;
   --radius: 16px;
 
   display: flex;
   min-height: 100vh;
-  background: var(--bg);
+  background: radial-gradient(120% 75% at 50% -10%, #0a1a1d 0%, #050b0e 42%, #020405 100%);
   color: var(--ink);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 14px;
@@ -31,6 +33,7 @@
   width: 256px;
   flex-shrink: 0;
   background: var(--sidebar);
+  border-right: 1px solid var(--line);
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -38,7 +41,7 @@
   gap: 18px;
 }
 
-.gm-logo { font-size: 22px; font-weight: 800; color: #ff5a5f; padding: 0 6px; }
+.gm-logo { font-size: 22px; font-weight: 800; color: var(--teal); padding: 0 6px; }
 .gm-logo span { color: #fff; }
 
 .gm-create {
@@ -51,7 +54,7 @@
 
 .gm-search {
   display: flex; align-items: center; gap: 8px;
-  background: #181b21; border: 1px solid #23262d; border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); border-radius: 10px;
   padding: 9px 12px; color: var(--muted);
 }
 .gm-search input {
@@ -82,27 +85,27 @@
 
 /* Carte upgrade */
 .gm-pro {
-  background: linear-gradient(135deg, #14b8be, #0e7d82);
+  background: linear-gradient(135deg, var(--teal), var(--teal-dark));
   border-radius: 14px; padding: 16px; color: #fff;
 }
 .gm-pro h3 { font-size: 14px; font-weight: 700; }
 .gm-pro p { font-size: 12px; opacity: .85; margin: 4px 0 12px; }
 .gm-pro button {
-  width: 100%; background: #fff; color: #0e7d82; border: none;
+  width: 100%; background: #fff; color: var(--teal-dark); border: none;
   padding: 8px; border-radius: 8px; font-weight: 600; cursor: pointer;
 }
 
 /* Invitations reçues (sidebar) */
-.gm-invsec { background: #15181e; border: 1px solid #23262d; border-radius: 12px; padding: 12px; }
+.gm-invsec { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
 .gm-invsec-title { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #6b7280; margin-bottom: 8px; }
-.gm-invsec-row { padding: 6px 0; border-top: 1px solid #23262d; }
+.gm-invsec-row { padding: 6px 0; border-top: 1px solid var(--line); }
 .gm-invsec-row:first-of-type { border-top: none; }
 .gm-invsec-name { font-size: 13px; color: #fff; font-weight: 600; }
 .gm-invsec-name span { color: #6b7280; font-weight: 400; }
 .gm-invsec-actions { display: flex; gap: 6px; margin-top: 6px; }
 .gm-invsec-actions button { flex: 1; border: none; border-radius: 7px; padding: 5px; font-size: 12px; font-weight: 600; cursor: pointer; }
 .gm-invsec-actions .ok { background: var(--teal); color: #fff; }
-.gm-invsec-actions .no { background: #23262d; color: #c2c7cf; }
+.gm-invsec-actions .no { background: rgba(255, 255, 255, 0.08); color: #c2c7cf; }
 
 .gm-logout { background: none; border: none; color: #6b7280; font-size: 16px; cursor: pointer; padding: 4px; }
 .gm-logout:hover { color: #fff; }
@@ -125,26 +128,26 @@
 .gm-btn {
   display: inline-flex; align-items: center; gap: 7px;
   border-radius: 10px; padding: 9px 15px; font-weight: 600; font-size: 13px;
-  cursor: pointer; border: 1px solid var(--line); background: #fff; color: var(--ink);
+  cursor: pointer; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.05); color: var(--ink);
 }
-.gm-btn:hover { background: #f7f8fa; }
+.gm-btn:hover { background: rgba(255, 255, 255, 0.09); }
 .gm-btn.teal { background: var(--teal); border-color: var(--teal); color: #fff; }
 .gm-btn.teal:hover { background: var(--teal-dark); }
-.gm-btn.danger { color: var(--red); border-color: #f6d4cf; }
-.gm-btn.danger:hover { background: #fdf1ef; }
+.gm-btn.danger { color: var(--red); border-color: rgba(255, 107, 90, 0.4); background: rgba(255, 107, 90, 0.06); }
+.gm-btn.danger:hover { background: rgba(255, 107, 90, 0.14); }
 
 .gm-grid { display: grid; grid-template-columns: 1fr 330px; gap: 22px; align-items: start; }
 
 .gm-card {
-  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
-  box-shadow: 0 1px 3px rgba(16, 24, 40, .04);
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: 0 20px 50px -30px rgba(0, 0, 0, .8);
 }
 
 /* Carte hero du groupe */
 .gm-hero { padding: 22px; display: flex; gap: 18px; }
 .gm-hero-cover {
   width: 92px; height: 92px; border-radius: 14px; flex-shrink: 0;
-  background: linear-gradient(135deg, #14b8be, #0e7d82);
+  background: linear-gradient(135deg, var(--teal), var(--teal-dark));
   display: flex; align-items: center; justify-content: center;
   color: #fff; font-weight: 800; text-align: center; font-size: 13px; padding: 8px;
 }
@@ -154,12 +157,12 @@
 .gm-title-row h2 { font-size: 20px; font-weight: 800; }
 .gm-verified { color: var(--teal); display: inline-flex; }
 .gm-created { font-size: 12px; color: var(--muted); margin-top: 3px; }
-.gm-desc { font-size: 13px; color: #4b5360; margin-top: 10px; line-height: 1.5; max-width: 460px; }
+.gm-desc { font-size: 13px; color: #b3bac4; margin-top: 10px; line-height: 1.5; max-width: 460px; }
 
 .gm-tags { display: flex; gap: 7px; margin-top: 12px; flex-wrap: wrap; }
 .gm-tag {
-  font-size: 12px; font-weight: 500; color: #4b5360;
-  background: #f1f3f6; border-radius: 999px; padding: 4px 11px;
+  font-size: 12px; font-weight: 500; color: #c2c8d0;
+  background: rgba(255, 255, 255, 0.06); border-radius: 999px; padding: 4px 11px;
 }
 
 .gm-hero-stat { text-align: right; flex-shrink: 0; }
@@ -173,8 +176,8 @@
 .gm-leader { padding: 14px 18px; display: flex; align-items: center; gap: 12px; }
 .gm-leader .grow { flex: 1; }
 .gm-badge {
-  font-size: 11px; font-weight: 700; color: var(--teal-dark);
-  background: #d8f5f6; border-radius: 999px; padding: 4px 10px;
+  font-size: 11px; font-weight: 700; color: var(--teal);
+  background: color-mix(in srgb, var(--teal) 18%, transparent); border-radius: 999px; padding: 4px 10px;
 }
 
 /* Liste des membres */
@@ -190,17 +193,17 @@
   padding: 12px 18px; border-bottom: 1px solid var(--line);
 }
 .gm-row:last-child { border-bottom: none; }
-.gm-row:hover { background: #fafbfc; }
+.gm-row:hover { background: rgba(255, 255, 255, 0.03); }
 .gm-person { display: flex; align-items: center; gap: 11px; min-width: 0; }
 .gm-person .gm-name { font-size: 14px; font-weight: 600; }
 .gm-person .gm-sub { font-size: 12px; color: var(--muted); }
-.gm-date { font-size: 13px; color: #4b5360; }
+.gm-date { font-size: 13px; color: #aab2bd; }
 .gm-status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--green); font-weight: 500; }
 .gm-status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
 .gm-remove { background: none; border: none; color: var(--red); font: inherit; font-weight: 600; cursor: pointer; text-align: right; }
 .gm-remove:hover { text-decoration: underline; }
 
-/* Avatars initiales (placeholder — remplaçables par de vraies photos) */
+/* Avatars initiales */
 .gm-avatar {
   width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
@@ -216,7 +219,7 @@
   display: flex; align-items: center; gap: 8px; margin: 14px 0;
   border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; color: var(--muted);
 }
-.gm-invite-search input { border: none; outline: none; font: inherit; width: 100%; }
+.gm-invite-search input { background: transparent; border: none; outline: none; font: inherit; width: 100%; color: var(--ink); }
 
 .gm-invite-list { display: flex; flex-direction: column; gap: 4px; }
 .gm-invite-row { display: flex; align-items: center; gap: 10px; padding: 8px 4px; }
@@ -224,17 +227,17 @@
 .gm-invite-row .gm-name { font-size: 13px; font-weight: 600; }
 .gm-invite-row .gm-sub { font-size: 11px; color: var(--muted); }
 .gm-invite-btn {
-  background: #e7f7f8; color: var(--teal-dark); border: none;
+  background: color-mix(in srgb, var(--teal) 16%, transparent); color: var(--teal); border: none;
   padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer;
 }
 .gm-invite-btn:hover { background: var(--teal); color: #fff; }
 
 .gm-copy {
   width: 100%; margin-top: 14px; padding: 10px; border-radius: 10px;
-  border: 1px dashed var(--teal); background: #f3fbfb; color: var(--teal-dark);
+  border: 1px dashed var(--teal); background: color-mix(in srgb, var(--teal) 8%, transparent); color: var(--teal);
   font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.gm-copy:hover { background: #e7f7f8; }
+.gm-copy:hover { background: color-mix(in srgb, var(--teal) 16%, transparent); }
 .gm-invite-foot { font-size: 12px; color: var(--muted); margin-top: 14px; text-align: center; }
 
 /* ─── Responsive ────────────────────────────────────────── */
