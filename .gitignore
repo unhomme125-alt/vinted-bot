@@ -26,9 +26,10 @@ dist/
 !.env.example
 
 
-# ── Images de référence / maquettes (non publiées) ───────
-/FRONT.png
-/menu.png
+# ── Images / captures (non publiées) — on ignore tous les PNG ────
+*.png
+# …sauf les assets applicatifs réellement utilisés par le front
+!vinted-bot-web/frontend/public/vinted-logo.png
 
 # ── OS / éditeurs ────────────────────────────────────────
 .DS_Store
