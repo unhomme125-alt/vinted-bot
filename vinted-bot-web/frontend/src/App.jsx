@@ -4,7 +4,7 @@ import Auth from './pages/Auth.tsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Results from './pages/Results.jsx';
 import GroupsManagement from './pages/GroupsManagement.jsx';
-import Home from './pages/Home.jsx';
+import Home from './pages/Home.tsx';
 
 function RequireAuth({ children }) {
   return isAuthenticated() ? children : <Navigate to="/login" replace />;
